@@ -2,7 +2,7 @@ SECTION "WRAM Bank 0", WRAM0
 
 wRAMStart::
 
-wRAMC000:: ;c000
+wc000:: ;c000
 ds 2
 
 ;bits correspond to if the respective button is pressed
@@ -17,25 +17,25 @@ ds 2
 wButtonPressed:: ;c002
 ds 1
 
-wRAMC003:: ;c003
+wc003:: ;c003
 ds 1
 
-wRAMC004:: ;c004
+wc004:: ;c004
 ds 1
 
-wRAMC005:: ;c005
+wc005:: ;c005
 ds 1
 
-wRAMC006:: ;c006
+wc006:: ;c006
 ds 1
 
-wRAMC007:: ;c007
+wc007:: ;c007
 ds 2
 
-wRAMC009:: ;c009
+wc009:: ;c009
 ds 1
 
-wRAMC00A:: ;c00a
+wButtonOrderValue:: ;c00a
 ds 1
 
 ;more ram is used starting at 0x100

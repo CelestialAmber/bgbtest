@@ -17,7 +17,7 @@ Init:
     ld hl, $8000 ;set hl to the beginning of tile memory
     ld de, $2000
     call Call_000_03b7
-    ld hl, wRAMC000
+    ld hl, wc000
     ld de, $2000
     call Call_000_03b7
     ld hl, $8010 ;set hl to point at the 2nd tile offset in vram (each 8x8 tile takes 16 bytes)
@@ -55,20 +55,20 @@ Init:
     ld a, $03
     ldh [rIE], a
     ld a, $01
-    ld [wRAMC009], a
+    ld [wc009], a
     ld a, $08
     ldh [rSCY], a
     xor a
     ldh [rIF], a
     ldh [rSCX], a
-    ld hl, wRAMC000
+    ld hl, wc000
     ld [hl], $c5
     inc hl
     ld [hl], $a7
     ld a, $01
-    ld [wRAMC005], a
+    ld [wc005], a
     ld a, $80
-    ld [wRAMC00A], a
+    ld [wButtonOrderValue], a
     ei
 
 jr_000_01e2:
@@ -82,7 +82,7 @@ MainLoop: ;0x1e7
     call PollInput
     call CheckInput
     call $ff80 ;OAMDmaCopy function at 0x419
-    ld hl, wRAMC007
+    ld hl, wc007
     inc [hl]
     ld a, [hl+]
     srl a
@@ -92,7 +92,7 @@ MainLoop: ;0x1e7
     ldh [rOBP1], a
     xor a
     ldh [rSCX], a
-    ld a, [wRAMC009]
+    ld a, [wc009]
     ldh [rIE], a
     call Call_000_0219
     call Call_000_0284
@@ -107,7 +107,6 @@ MainLoop: ;0x1e7
 
 Call_000_0219:
     ld bc, $c140
-
 jr_000_021c:
     inc c
     inc c
@@ -120,20 +119,15 @@ jr_000_021c:
     ld a, [bc]
     sub e
     jr c, jr_000_0233
-
     ld [bc], a
     inc c
     inc c
     inc c
-
 jr_000_022d:
     ld a, c
     cp $a0
     jr nz, jr_000_021c
-
     ret
-
-
 jr_000_0233:
     ld a, $a8
     ld [bc], a
@@ -141,12 +135,10 @@ jr_000_0233:
     ld a, [bc]
     dec a
     jr nz, jr_000_0241
-
     call Call_000_031f
     inc c
     ld [bc], a
     dec c
-
 jr_000_0241:
     call Call_000_031f
     and $7f
@@ -161,23 +153,20 @@ jr_000_0241:
     inc c
     ld a, l
     and $0f
-
 jr_000_0257:
     ld e, a
     sub $03
     jr nc, jr_000_0257
-
     inc e
     or $90
     ld [bc], a
     inc c
     jr jr_000_022d
-
 Call_000_0263:
-    ld a, [wRAMC003]
+    ld a, [wc003]
     or a
     ret z
-    ld hl, wRAMC00A
+    ld hl, wButtonOrderValue
     bit 7, a
     jr nz, jr_000_0281
     and [hl]
@@ -204,11 +193,11 @@ Call_000_0284:
     ld a, [wButtonPressed]
     xor $c0
     and $c0
-    ld a, [wRAMC003]
+    ld a, [wc003]
     jr z, jr_000_02a2
 jr_000_0290:
     ld b, a
-    ld hl, wRAMC000
+    ld hl, wc000
     xor [hl]
     ld a, [hl]
     ld a, b
@@ -231,9 +220,9 @@ jr_000_02ad:
     push af
     ld c, $13
     ld b, $00
-    ld a, [wRAMC004]
+    ld a, [wc004]
     xor $01
-    ld [wRAMC004], a
+    ld [wc004], a
     jr nz, jr_000_02c0
     ld c, $18
     ld b, $02
@@ -253,7 +242,7 @@ db $0A,$06,$42,$06,$72,$06,$89,$06,$B2,$06,$D6,$06,$E7,$06,$06,$07
 
 ;also related to sound
 Call_000_02db:
-    ld bc, wRAMC005
+    ld bc, wc005
     ld a, [bc]
     dec a
     ld [bc], a
@@ -268,7 +257,7 @@ Call_000_02db:
     ld [c], a
     ret
 jr_000_02f0:
-    ld hl, wRAMC006
+    ld hl, wc006
     inc [hl]
     ld a, [hl]
     and $02
@@ -302,7 +291,7 @@ jr_000_0302:
 
 
 Call_000_031f:
-    ld de, wRAMC000
+    ld de, wc000
     ld a, [de]
     ld h, a
     inc e
@@ -416,7 +405,6 @@ CheckInput:
 
 Call_000_03b7:
     call Call_000_03dd
-
 jr_000_03ba:
     ld [hl+], a
     dec e
@@ -428,7 +416,6 @@ jr_000_03ba:
 
 Call_000_03c2:
     call Call_000_03dd
-
 jr_000_03c5:
     ld a, [bc]
     ld [hl+], a
@@ -442,7 +429,6 @@ jr_000_03c5:
 
 Call_000_03cf:
     call Call_000_03dd
-
 CopyTileToVRAM:
     ld a, [bc]
     ld [hl+], a
@@ -462,7 +448,7 @@ Call_000_03dd:
     jr z, jr_000_03e3
     inc d
 jr_000_03e3:
-    pop af ;this points to 3d2(copytiletovram) for the bgb text
+    pop af
     ret
 
 
@@ -552,7 +538,7 @@ PollInput:
     ld a, [wButtonPressed]
     xor b
     and b
-    ld [wRAMC003], a
+    ld [wc003], a
     ld a, b
     ld [wButtonPressed], a
     ld a, $30

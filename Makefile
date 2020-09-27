@@ -7,12 +7,22 @@
 
 ROM := bgbtest.gb
 OBJS := main.o wram.o
-MD5 := md5sum -c
+
+
+### Build tools
+
+ifeq (,$(shell which sha1sum))
+SHA1 := shasum
+else
+SHA1 := sha1sum
+endif
+
+
 
 all: $(ROM)
 
 compare: $(ROM)
-	@$(MD5) rom.md5
+	@$(SHA1) -c rom.sha1
 
 tidy:
 	rm -f $(ROM) $(OBJS) $(ROM:.gb=.sym) $(ROM:.gb=.map)
